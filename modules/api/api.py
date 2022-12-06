@@ -13,6 +13,7 @@ import modules.shared as shared
 from modules import sd_samplers, deepbooru
 from modules.api.models import *
 from modules.processing import StableDiffusionProcessingTxt2Img, StableDiffusionProcessingImg2Img, process_images
+from modules.sd_models import get_checkpoint_info, load_model
 from modules.extras import run_extras, run_pnginfo
 from PIL import PngImagePlugin,Image
 from modules.sd_models import checkpoints_list
@@ -110,6 +111,9 @@ class Api:
         raise HTTPException(status_code=401, detail="Incorrect username or password", headers={"WWW-Authenticate": "Basic"})
 
     def text2imgapi(self, txt2imgreq: StableDiffusionTxt2ImgProcessingAPI):
+        if txt2imgreq.model_hash and shared.sd_model and shared.sd_model.sd_model_hash != txt2imgreq.model_hash:
+            info = get_checkpoint_info(txt2imgreq.model_hash)
+            load_model(info)
         populate = txt2imgreq.copy(update={ # Override __init__ params
             "sd_model": shared.sd_model,
             "sampler_name": validate_sampler_name(txt2imgreq.sampler_name or txt2imgreq.sampler_index),
@@ -141,6 +145,9 @@ class Api:
         mask = img2imgreq.mask
         if mask:
             mask = decode_base64_to_image(mask)
+        if img2imgreq.model_hash and shared.sd_model and shared.sd_model.sd_model_hash != img2imgreq.model_hash:
+            info = get_checkpoint_info(img2imgreq.model_hash)
+            load_model(info)
 
         populate = img2imgreq.copy(update={ # Override __init__ params
             "sd_model": shared.sd_model,

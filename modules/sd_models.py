@@ -127,6 +127,13 @@ def select_checkpoint():
 
     return checkpoint_info
 
+def get_checkpoint_info(model_hash):
+    for info in checkpoints_list.values():
+        if info.hash == model_hash:
+            return info
+
+    return None
+
 
 chckpoint_dict_replacements = {
     'cond_stage_model.transformer.embeddings.': 'cond_stage_model.transformer.text_model.embeddings.',
