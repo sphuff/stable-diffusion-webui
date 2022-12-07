@@ -114,6 +114,8 @@ class Api:
         if txt2imgreq.model_hash and shared.sd_model and shared.sd_model.sd_model_hash != txt2imgreq.model_hash:
             info = get_checkpoint_info(txt2imgreq.model_hash)
             load_model(info)
+            txt2imgreq.model_hash = None
+        
         populate = txt2imgreq.copy(update={ # Override __init__ params
             "sd_model": shared.sd_model,
             "sampler_name": validate_sampler_name(txt2imgreq.sampler_name or txt2imgreq.sampler_index),
@@ -148,6 +150,7 @@ class Api:
         if img2imgreq.model_hash and shared.sd_model and shared.sd_model.sd_model_hash != img2imgreq.model_hash:
             info = get_checkpoint_info(img2imgreq.model_hash)
             load_model(info)
+            img2imgreq.model_hash = None
 
         populate = img2imgreq.copy(update={ # Override __init__ params
             "sd_model": shared.sd_model,
