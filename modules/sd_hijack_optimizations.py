@@ -226,7 +226,7 @@ def xformers_attention_forward(self, x, context=None, mask=None):
 
     q, k, v = map(lambda t: rearrange(t, 'b n (h d) -> b n h d', h=h), (q_in, k_in, v_in))
     del q_in, k_in, v_in
-    out = xformers.ops.memory_efficient_attention(q, k, v, attn_bias=None)
+    out = xformers.ops.memory_efficient_attention(q, k, v)
 
     out = rearrange(out, 'b n h d -> b n (h d)', h=h)
     return self.to_out(out)
