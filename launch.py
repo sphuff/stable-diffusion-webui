@@ -299,6 +299,7 @@ def start():
     import webui
     log_file = open("server.log","w")
     sys.stdout = log_file
+    sys.stderr = log_file
     if '--nowebui' in sys.argv:
         webui.api_only()
     else:
