@@ -18,6 +18,7 @@ import modules.shared as shared
 from modules import sd_samplers, deepbooru, sd_hijack, images, scripts, ui, postprocessing
 from modules.api.models import *
 from modules.processing import StableDiffusionProcessingTxt2Img, StableDiffusionProcessingImg2Img, process_images
+from modules.sd_models import get_checkpoint_info, load_model
 from modules.textual_inversion.textual_inversion import create_embedding, train_embedding
 from modules.textual_inversion.preprocess import preprocess
 from modules.hypernetworks.hypernetwork import create_hypernetwork, train_hypernetwork
@@ -283,6 +284,10 @@ class Api:
         if not self.default_script_arg_txt2img:
             self.default_script_arg_txt2img = self.init_default_script_args(script_runner)
         selectable_scripts, selectable_script_idx = self.get_selectable_script(txt2imgreq.script_name, script_runner)
+        
+        if txt2imgreq.model_hash and shared.sd_model and shared.sd_model.sd_model_hash != txt2imgreq.model_hash:
+            info = get_checkpoint_info(txt2imgreq.model_hash)
+            load_model(info)
 
         populate = txt2imgreq.copy(update={  # Override __init__ params
             "sampler_name": validate_sampler_name(txt2imgreq.sampler_name or txt2imgreq.sampler_index),
@@ -329,6 +334,9 @@ class Api:
         mask = img2imgreq.mask
         if mask:
             mask = decode_base64_to_image(mask)
+        if img2imgreq.model_hash and shared.sd_model and shared.sd_model.sd_model_hash != img2imgreq.model_hash:
+            info = get_checkpoint_info(img2imgreq.model_hash)
+            load_model(info)
 
         script_runner = scripts.scripts_img2img
         if not script_runner.scripts:
