@@ -302,7 +302,7 @@ class Api:
         if not self.default_script_arg_txt2img:
             self.default_script_arg_txt2img = self.init_default_script_args(script_runner)
         selectable_scripts, selectable_script_idx = self.get_selectable_script(txt2imgreq.script_name, script_runner)
-        
+
         if shared.sd_model is None or (txt2imgreq.model_hash and shared.sd_model.sd_model_hash != txt2imgreq.model_hash):
             info = get_checkpoint_info(txt2imgreq.model_hash)
             load_model(info)
