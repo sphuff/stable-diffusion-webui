@@ -352,7 +352,7 @@ class Api:
         mask = img2imgreq.mask
         if mask:
             mask = decode_base64_to_image(mask)
-            
+
         if shared.sd_model is None or (img2imgreq.model_hash and shared.sd_model.sd_model_hash != img2imgreq.model_hash):
             info = get_checkpoint_info(img2imgreq.model_hash)
             load_model(info)
